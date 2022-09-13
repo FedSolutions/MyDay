@@ -21,7 +21,7 @@ import { FontIcon } from '@fluentui/react/lib/Icon';
 import { Panel, PanelType } from '@fluentui/react/lib/Panel';
 import { initializeIcons } from '@uifabric/icons';
 import { mergeStyles, mergeStyleSets } from '@fluentui/react/lib/Styling';
-import { GraphRequest } from '@microsoft/sp-http';
+import {MSGraphClientV3} from '@microsoft/sp-http';
 import { DisplayMode } from '@microsoft/sp-core-library';
 
 export class MyDayEmail extends React.Component<IMyDayEmailProps, IMyDayEmailState> {
@@ -77,7 +77,7 @@ export class MyDayEmail extends React.Component<IMyDayEmailProps, IMyDayEmailSta
       messages: []
     });   
 
-    const request: GraphRequest = this.props.graphClient
+    const request: m = this.props.graphClient
       .api("me/mailFolders/Inbox/messages")
       .version("v1.0")
       .select("id,bodyPreview,receivedDateTime,from,subject,webLink,isRead,importance,flag,hasAttachments") //,meetingMessageType             
@@ -146,12 +146,9 @@ export class MyDayEmail extends React.Component<IMyDayEmailProps, IMyDayEmailSta
       return;
     }
 
-    const request: GraphRequest = this.props.graphClient
+    const request: m = this.props.graphClient
       .api(`me/mailFolders/Inbox/messages/${messageId}`)
-      .version("v1.0")
       .select("id,bodyPreview,receivedDateTime,from,subject,webLink,isRead,importance,flag,hasAttachments,body,toRecipients,ccRecipients"); //,meetingMessageType            
-
-    request
       .get()
       .then((result: IMessageDetails) => {          
         this.setState({

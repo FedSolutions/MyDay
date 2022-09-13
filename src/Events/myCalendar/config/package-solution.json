@@ -23,7 +23,26 @@
       "privacyUrl": "",
       "termsOfUseUrl": "",
       "mpnId": ""
-    }
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "my-calendar description"
+      },
+      "longDescription": {
+        "default": "my-calendar description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "my-calendar Feature",
+        "description": "The feature that activates elements of the my-calendar solution.",
+        "id": "1b27dae0-bcfb-4a0c-8b5a-742d4b330107",
+        "version": "1.0.0.3"
+      }
+    ]
   },
   "paths": {
     "zippedPackage": "solution/my-calendar.sppkg"
