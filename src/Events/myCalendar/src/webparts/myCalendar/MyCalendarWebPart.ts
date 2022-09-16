@@ -18,7 +18,7 @@ import {
 import * as strings from 'MyCalendarWebPartStrings';
 import MyCalendar from './components/MyCalendar';
 import { IMyCalendarProps } from './components/IMyCalendarProps';
-import { MSGraphClient } from '@microsoft/sp-http';
+import { MSGraphClientV3 } from '@microsoft/sp-http';
 
 
 export interface IMyCalendarWebPartProps {
@@ -33,14 +33,14 @@ export interface IMyCalendarWebPartProps {
 }
 
 export default class MyCalendarWebPart extends BaseClientSideWebPart<IMyCalendarWebPartProps> {
-  private propertyFieldNumber;
-  private graphClient: MSGraphClient;
+  private propertyFieldNumber: any;
+  private graphClient: MSGraphClientV3;
 
   public onInit(): Promise<void> {
     return new Promise<void>((resolve: () => void, reject: (error: any) => void): void => {
       this.context.msGraphClientFactory
-        .getClient()
-        .then((client: MSGraphClient): void => {
+        .getClient("3")
+        .then((client: MSGraphClientV3): void => {
           this.graphClient = client;
           resolve();
         }, err => reject(err));

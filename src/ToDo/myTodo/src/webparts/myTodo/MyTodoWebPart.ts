@@ -11,7 +11,7 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as strings from 'MyTodoWebPartStrings';
 import MyTodo from './components/MyTodo';
 import { IMyTodoProps } from './components/IMyTodoProps';
-import { MSGraphClient } from '@microsoft/sp-http';
+import { MSGraphClientV3 } from '@microsoft/sp-http';
 import { PropertyFieldNumber } from '@pnp/spfx-property-controls/lib/PropertyFieldNumber';
 import { WebPartTitle } from '@pnp/spfx-controls-react/lib/WebPartTitle';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/components/Spinner';
@@ -24,13 +24,13 @@ export interface IMyTodoWebPartProps {
 }
 
 export default class MyTodoWebPart extends BaseClientSideWebPart<IMyTodoWebPartProps> {
-  private graphClient: MSGraphClient;
+  private graphClient: MSGraphClientV3;
 
   public onInit(): Promise<void> {
     return new Promise<void>((resolve: () => void, reject: (error: any) => void): void => {
       this.context.msGraphClientFactory
-        .getClient()
-        .then((client: MSGraphClient): void => {
+        .getClient("3")
+        .then((client: MSGraphClientV3): void => {
           this.graphClient = client;
           resolve();
         }, err => reject(err));

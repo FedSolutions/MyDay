@@ -19,7 +19,7 @@ import { Stack, IStackStyles, IStackTokens, IStackItemStyles } from '@fluentui/r
 import { Text, ITextProps } from '@fluentui/react/lib/Text';
 import { Separator } from '@fluentui/react/lib/Separator';
 import { Event } from '@microsoft/microsoft-graph-types';
-import { GraphRequest } from "@microsoft/sp-http";
+import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { unstable_renderSubtreeIntoContainer } from 'react-dom';
 
 export default class MyCalendar extends React.Component<IMyCalendarProps, IMyCalendarState> {
@@ -77,16 +77,12 @@ export default class MyCalendar extends React.Component<IMyCalendarProps, IMyCal
       meetings: []
     });    
 
-    const request: GraphRequest = this.props.graphClient
+    this.props.graphClient
       .api(`me/calendar/calendarView?startDateTime=${new Date().toISOString()}&endDateTime=${this._getFilterEndDateString()}`)
       .version("v1.0")
       .select('subject,start,end,showAs,webLink,location,isAllDay')
       .top(this.props.numMeetings > 0 ? this.props.numMeetings : 100)
-      .orderby("start/dateTime");
-
-    console.log(request.buildFullUrl());
-
-    request
+      .orderby("start/dateTime")
       .get()
       .then((result: IMeetings) => {
         const meetings: IMeeting[] = (result && result.value) ? result.value : [];
