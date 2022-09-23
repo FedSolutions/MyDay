@@ -13,8 +13,7 @@ import MyTodo from './components/MyTodo';
 import { IMyTodoProps } from './components/IMyTodoProps';
 import { MSGraphClientV3 } from '@microsoft/sp-http';
 import { PropertyFieldNumber } from '@pnp/spfx-property-controls/lib/PropertyFieldNumber';
-import { WebPartTitle } from '@pnp/spfx-controls-react/lib/WebPartTitle';
-import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/components/Spinner';
+
 
 export interface IMyTodoWebPartProps {
   title: string;

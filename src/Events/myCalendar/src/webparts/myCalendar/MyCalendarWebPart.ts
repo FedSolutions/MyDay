@@ -9,7 +9,6 @@ import {
 } from '@microsoft/sp-webpart-base';
 import {
   IPropertyPaneConfiguration,
-  PropertyPaneTextField,
   PropertyPaneSlider,
   PropertyPaneDropdown,
   PropertyPaneToggle

@@ -21,7 +21,7 @@ import { FontIcon } from '@fluentui/react/lib/Icon';
 import { Panel, PanelType } from '@fluentui/react/lib/Panel';
 import { initializeIcons } from '@uifabric/icons';
 import { mergeStyles, mergeStyleSets } from '@fluentui/react/lib/Styling';
-import { MSGraphClientV3 } from '@microsoft/sp-http';
+import { MSGraphClientV3, GraphRequest } from '@microsoft/sp-http';
 import { DisplayMode } from '@microsoft/sp-core-library';
 
 export class MyDayEmail extends React.Component<IMyDayEmailProps, IMyDayEmailState> {
@@ -77,56 +77,53 @@ export class MyDayEmail extends React.Component<IMyDayEmailProps, IMyDayEmailSta
       messages: []
     });
 
+    let request = this.props.graphClient
+    .api("me/mailFolders/Inbox/messages")
+    .version("v1.0")
+    .select("id,bodyPreview,receivedDateTime,from,subject,webLink,isRead,importance,flag,hasAttachments") //,meetingMessageType             
+    .top(this.props.numberOfMessages || 5)
 
-    var filter: string;
+  // Graph API does not like ordering when we are viewing only flagged items.
+  if ((this.state.filter == strings.AllPivot) || (this.state.filter == strings.UnreadPivot)) {
+      request.orderby("receivedDateTime desc");
+  }
 
-    const request: MSGraphClientV3 = this.props.graphClient
-    // Graph API does not like ordering when we are viewing only flagged items.
-    if ((this.state.filter == strings.AllPivot) || (this.state.filter == strings.UnreadPivot)) {
-      let filter = "receivedDateTime desc";
-    }
+  if (this.state.filter == strings.UnreadPivot) {
+    request.filter("isRead eq false");
+  }
+  else if (this.state.filter == EMailDisplay.Important) {
+    request.filter("importance eq 'high'");
+  }
+  else if (this.state.filter == EMailDisplay.Flagged) {
+    request.filter("flag/flagStatus eq 'flagged'");
+  }
+    
+  //console.log(`email request: filter = ${this.state.filter} - url: ${request.buildFullUrl()}`);
 
-    if (this.state.filter == strings.UnreadPivot) {
-      var filter = "isRead eq false";
-    }
-    else if (this.state.filter == EMailDisplay.Important) {
-      let filter = "importance eq 'high'";
-    }
-    else if (this.state.filter == EMailDisplay.Flagged) {
-      let filter = "flag/flagStatus eq 'flagged'";
-    }
-
-    request
-      .api("me/mailFolders/Inbox/messages")
-      .version("v1.0")
-      .select("id,bodyPreview,receivedDateTime,from,subject,webLink,isRead,importance,flag,hasAttachments")
-      .top(this.props.numberOfMessages || 5)
-      .filter(filter)
-      .get((err: any, res: IMessages): void => {
-        if (err) {
-          // Something failed calling the MS Graph
-          this.setState({
-            error: err.message ? err.message : strings.Error,
-            loading: false
-          });
-          return;
-        }
-
-        // Check if a response was retrieved
-        if (res && res.value && res.value.length > 0) {
-          this.setState({
-            messages: res.value,
-            loading: false
-          });
-        }
-        else {
-          // No messages found
-          this.setState({
-            loading: false
-          });
-        }
+  request.get((err: any, res: IMessages): void => {
+    if (err) {
+      // Something failed calling the MS Graph
+      this.setState({
+        error: err.message ? err.message : strings.Error,
+        loading: false
       });
+      return;
+    }
 
+    // Check if a response was retrieved
+    if (res && res.value && res.value.length > 0) {
+      this.setState({
+        messages: res.value,
+        loading: false
+      });
+    }
+    else {
+      // No messages found
+      this.setState({
+        loading: false
+      });
+    }
+  });
   }
   private _handlePivotChange = (item: PivotItem): void => {
     console.log(`Pivot Change: ${item.props.itemKey}`);
@@ -200,7 +197,7 @@ export class MyDayEmail extends React.Component<IMyDayEmailProps, IMyDayEmailSta
   }
 
   private _reRender = (): void => {
-    //this._loadMessages();
+   // this._loadMessages();
 
     // update the render date to force reloading data and re-rendering
     // the component    

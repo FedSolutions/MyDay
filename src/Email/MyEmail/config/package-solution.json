@@ -14,7 +14,7 @@
       "videoUrl": "",
       "categories": []
     },
-    "version": "1.0.1.3",
+    "version": "1.0.1.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
@@ -29,7 +29,7 @@
         "title": "my-day-email Feature",
         "description": "The feature that activates elements of the my-day-email solution.",
         "id": "ca718635-b819-418b-802e-bf775ffd0cdc",
-        "version": "1.0.1.3"
+        "version": "1.0.1.0"
       }
     ],
     "developer": {

@@ -7,7 +7,7 @@
   "configurations": [
     {
       "name": "Hosted workbench",
-      "type": "pwa-chrome",
+      "type": "msedge",
       "request": "launch",
       "url": "https://gov710405.sharepoint.com/sites/Me/_layouts/workbench.aspx",
       "webRoot": "${workspaceRoot}",
@@ -17,11 +17,7 @@
         "webpack:///../../../src/*": "${webRoot}/src/*",
         "webpack:///../../../../src/*": "${webRoot}/src/*",
         "webpack:///../../../../../src/*": "${webRoot}/src/*"
-      },
-      "runtimeArgs": [
-        "--remote-debugging-port=9222",
-        "-incognito"
-      ]
+      }
     }
   ]
 }

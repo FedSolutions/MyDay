@@ -4,16 +4,16 @@ import * as React from 'react';
 import * as strings from 'MyTodoWebPartStrings';
 import styles from './MyTodo.module.scss';
 import { IMyTodoProps } from './IMyTodoProps';
-import { GraphRequest, MSGraphClientV3 } from '@microsoft/sp-http';
-import { List, Link, Label } from 'office-ui-fabric-react';
+import { MSGraphClientV3 } from '@microsoft/sp-http';
+import { List, Link } from 'office-ui-fabric-react';
 import { IMyTodoState } from './IMyTodoState';
 import { ITaskList, ITasksLists } from './ITaskList';
 import { ITasks, ITask } from './ITasks';
-import { FontIcon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
-import { IconButton, IButtonProps } from 'office-ui-fabric-react/lib/Button';
+import { IIconProps } from 'office-ui-fabric-react/lib/Icon';
+import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
 import { WebPartTitle } from '@pnp/spfx-controls-react/lib/WebPartTitle';
-import { mergeStyles, mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
+import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/components/Spinner';
 import { Separator } from 'office-ui-fabric-react/lib/Separator';
 
@@ -222,10 +222,6 @@ export default class MyTodo extends React.Component<IMyTodoProps, IMyTodoState> 
       className: iconImportance
     };
 
-    const completedTaskIcon: IIconProps = {
-      iconName: 'SkypeCircleCheck',
-      className: iconClass
-    };
 
     const dateDisplay = {
       text: "",

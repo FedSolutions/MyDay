@@ -11,16 +11,14 @@ import { WebPartTitle } from '@pnp/spfx-controls-react/lib/WebPartTitle';
 import { CommandBar, ICommandBarItemProps } from '@fluentui/react/lib/CommandBar';
 import { Link } from '@fluentui/react/lib/components/Link';
 import { List } from '@fluentui/react/lib/components/List';
-import { PrimaryButton, IIconProps } from '@fluentui/react';
+import { PrimaryButton } from '@fluentui/react';
 import { initializeIcons,  } from '@uifabric/icons';
-import { mergeStyles, mergeStyleSets } from '@fluentui/react/lib/Styling';
+import { mergeStyles } from '@fluentui/react/lib/Styling';
 import { Panel, PanelType } from '@fluentui/react/lib/Panel';
-import { Stack, IStackStyles, IStackTokens, IStackItemStyles } from '@fluentui/react/lib/Stack';
-import { Text, ITextProps } from '@fluentui/react/lib/Text';
-import { Separator } from '@fluentui/react/lib/Separator';
+import { Stack,IStackTokens} from '@fluentui/react/lib/Stack';
+import { Text } from '@fluentui/react/lib/Text';
 import { Event } from '@microsoft/microsoft-graph-types';
-import { MSGraphClientV3 } from "@microsoft/sp-http";
-import { unstable_renderSubtreeIntoContainer } from 'react-dom';
+
 
 export default class MyCalendar extends React.Component<IMyCalendarProps, IMyCalendarState> {
   private _interval: number;
@@ -113,7 +111,7 @@ export default class MyCalendar extends React.Component<IMyCalendarProps, IMyCal
      */
   private _onRenderCell = (item: IMeeting, index: number | undefined): JSX.Element => {
     const startDate: Date = new Date(item.start.dateTime + 'Z');
-    const endDate: Date = new Date(item.end.dateTime + 'Z');     
+ 
 
     const itemElement: JSX.Element = 
       <div className={`${styles.meetingWrapper} ${item.showAs}`}>
@@ -144,7 +142,7 @@ export default class MyCalendar extends React.Component<IMyCalendarProps, IMyCal
   }
 
   private _getDateText = (date: Date): string => {
-    var text: string;
+    let text: string;
 
     if (this._isDateToday(date)) {
       text = "Today";
@@ -230,7 +228,7 @@ export default class MyCalendar extends React.Component<IMyCalendarProps, IMyCal
     const endDate: Date = new Date(meeting.end.dateTime + 'Z');        
     // get duration in minutes
     const duration: number = Math.round((endDate as any) - (startDate as any)) / (1000 * 60);
-    var durationText: string;
+    let durationText: string;
 
     if (duration <= 0) {
       durationText = '';

@@ -1,4 +1,7 @@
 # Change log for MyEmail 
+# 1.0.1.0
+
+*Upgrade to 1.15.2 
 
 # 1.0.0.2
 
