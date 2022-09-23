@@ -25,7 +25,7 @@ import {
 import { PropertyFieldNumber } from '@pnp/spfx-property-controls/lib/PropertyFieldNumber';
 import { CalloutTriggers } from '@pnp/spfx-property-controls/lib/PropertyFieldHeader';
 import { PropertyFieldToggleWithCallout } from '@pnp/spfx-property-controls/lib/PropertyFieldToggleWithCallout';
-import { MSGraphClient } from '@microsoft/sp-http';
+import { MSGraphClientV3 } from '@microsoft/sp-http';
 import { EmailDisplayPropertyLabel } from 'MyDayEmailWebPartStrings';
 
 export interface IMyDayEmailWebPartProps {
@@ -44,7 +44,7 @@ export interface IMyDayEmailWebPartProps {
 }
 
 export default class MyDayEmailWebPart extends BaseClientSideWebPart<IMyDayEmailWebPartProps> {
-  private _graphClient: MSGraphClient;  
+  private _graphClient: MSGraphClientV3;  
   private _themeProvider: ThemeProvider;
   private _themeVariant: IReadonlyTheme | undefined;
 
@@ -62,8 +62,8 @@ export default class MyDayEmailWebPart extends BaseClientSideWebPart<IMyDayEmail
 
     return new Promise<void>((resolve: () => void, reject: (error: any) => void): void => {
       this.context.msGraphClientFactory
-        .getClient()
-        .then((client: MSGraphClient): void => {
+        .getClient('3')
+        .then((client: MSGraphClientV3): void => {
           this._graphClient = client;
           resolve();
         }, err => reject(err));

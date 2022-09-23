@@ -4,16 +4,16 @@ import * as React from 'react';
 import * as strings from 'MyTodoWebPartStrings';
 import styles from './MyTodo.module.scss';
 import { IMyTodoProps } from './IMyTodoProps';
-import { GraphRequest } from '@microsoft/sp-http';
-import { List, Link, Label } from 'office-ui-fabric-react';
+import { MSGraphClientV3 } from '@microsoft/sp-http';
+import { List, Link } from 'office-ui-fabric-react';
 import { IMyTodoState } from './IMyTodoState';
 import { ITaskList, ITasksLists } from './ITaskList';
 import { ITasks, ITask } from './ITasks';
-import { FontIcon, IIconProps } from 'office-ui-fabric-react/lib/Icon';
-import { IconButton, IButtonProps } from 'office-ui-fabric-react/lib/Button';
+import { IIconProps } from 'office-ui-fabric-react/lib/Icon';
+import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
 import { WebPartTitle } from '@pnp/spfx-controls-react/lib/WebPartTitle';
-import { mergeStyles, mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
+import { mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/components/Spinner';
 import { Separator } from 'office-ui-fabric-react/lib/Separator';
 
@@ -47,23 +47,19 @@ export default class MyTodo extends React.Component<IMyTodoProps, IMyTodoState> 
     if (!this.props.graphClient) {
       return;
     }
-    const request: GraphRequest = this.props.graphClient
-      .api("me/todo/lists")
-      .version("v1.0");
-    return request.get((err: any, res: ITasksLists): void => {
-
+    return this.props.graphClient.api("me/todo/lists").version("v1.0").get((err: any, res: ITasksLists): void => {
       // Check if a response was retrieved
-      if (err) {
-        console.error(err);
-      }
-      else if (res && res.value && res.value.length > 0) {
-        const myLists: ITaskList[] = res.value;
-        // filter through task list since issues with graph doing filter
-        const activeTaskList: ITaskList = (myLists.filter(list => list.wellknownListName === "defaultList"))[0];
-        this._getTasks(activeTaskList);
-      }
-      return null;
-    });
+        if (err) {
+          console.error(err);
+        }
+        else if (res && res.value && res.value.length > 0) {
+          const myLists: ITaskList[] = res.value;
+          // filter through task list since issues with graph doing filter
+          const activeTaskList: ITaskList = (myLists.filter(list => list.wellknownListName === "defaultList"))[0];
+          this._getTasks(activeTaskList);
+        }
+        return null;
+      });
   }
 
   private _getTasks = (defaultTaskList: ITaskList) => {
@@ -77,33 +73,33 @@ export default class MyTodo extends React.Component<IMyTodoProps, IMyTodoState> 
 
     const apiUrl = "me/todo/lists/" + defaultTaskList.id + "/tasks";
 
-    const request: GraphRequest = this.props.graphClient
-      .api(apiUrl)
-      .filter(`status ne 'completed'`)
-      .top(this.props.nrOfTasks || 5)
-      .version("v1.0");
-    return request.get((err: any, res: ITasks): void => {
-      // Check if a response was retrieved
-      if (err) {
-        console.error("Error: " + err);
-        this.setState({
-          error: err.message ? err.message : strings.Error,
-          loading: false
-        });
-      }
-      else if (res && res.value && res.value.length > 0) {
-        const myTasks: ITask[] = res.value;
-        this.setState({
-          tasks: myTasks,
-          loading: false,
-          activeTaskList: defaultTaskList
-        });
-      }
-      else{
-        this.setState({
-          loading: false
-        });
-      }
+    this.props.graphClient
+             .api(apiUrl)
+             .version("v1.0")
+             .filter(`status ne 'completed'`)
+             .top(this.props.nrOfTasks || 5)
+              .get((err: any, res: ITasks): void => {
+              // Check if a response was retrieved
+              if (err) {
+                console.error("Error: " + err);
+                this.setState({
+                  error: err.message ? err.message : strings.Error,
+                  loading: false
+                });
+              }
+              else if (res && res.value && res.value.length > 0) {
+                const myTasks: ITask[] = res.value;
+                this.setState({
+                  tasks: myTasks,
+                  loading: false,
+                  activeTaskList: defaultTaskList
+                });
+              }
+              else{
+                this.setState({
+                  loading: false
+                });
+              }
     });
   }
 
@@ -154,11 +150,8 @@ export default class MyTodo extends React.Component<IMyTodoProps, IMyTodoState> 
       return;
     }
 
-    const graphRequest: GraphRequest = this.props.graphClient
-      .api(`me/todo/lists/${this.state.activeTaskList.id}/tasks/${taskId}`)
-      .version("v1.0");
-
-    graphRequest.patch({ status: `${status}` });
+    const graphRequest: MSGraphClientV3 = this.props.graphClient
+      graphRequest.api(`me/todo/lists/${this.state.activeTaskList.id}/tasks/${taskId}`).version("v1.0").patch({ status: `${status}` });
 
     const tasks: ITask[] = [];
     this.state.tasks.forEach((task: ITask) => {
@@ -180,11 +173,8 @@ export default class MyTodo extends React.Component<IMyTodoProps, IMyTodoState> 
     importance = importance == 'normal' ? 'high' : 'normal';
     console.log("Importance" + importance);
 
-    const graphRequest: GraphRequest = this.props.graphClient
-      .api(`me/todo/lists/${this.state.activeTaskList.id}/tasks/${taskId}`)
-      .version("v1.0");
-
-    graphRequest.patch({ importance: `${importance}` });
+    const graphRequest: MSGraphClientV3 = this.props.graphClient
+      graphRequest.api(`me/todo/lists/${this.state.activeTaskList.id}/tasks/${taskId}`).version("v1.0").patch({ importance: `${importance}` });
 
     const tasks: ITask[] = [];
     this.state.tasks.forEach((task: ITask) => {
@@ -232,10 +222,6 @@ export default class MyTodo extends React.Component<IMyTodoProps, IMyTodoState> 
       className: iconImportance
     };
 
-    const completedTaskIcon: IIconProps = {
-      iconName: 'SkypeCircleCheck',
-      className: iconClass
-    };
 
     const dateDisplay = {
       text: "",

@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import * as React from 'react';
 
 export const enum HeaderDisplay {
   Standard = "Standard",

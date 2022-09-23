@@ -11,16 +11,14 @@ import { WebPartTitle } from '@pnp/spfx-controls-react/lib/WebPartTitle';
 import { CommandBar, ICommandBarItemProps } from '@fluentui/react/lib/CommandBar';
 import { Link } from '@fluentui/react/lib/components/Link';
 import { List } from '@fluentui/react/lib/components/List';
-import { PrimaryButton, IIconProps } from '@fluentui/react';
+import { PrimaryButton } from '@fluentui/react';
 import { initializeIcons,  } from '@uifabric/icons';
-import { mergeStyles, mergeStyleSets } from '@fluentui/react/lib/Styling';
+import { mergeStyles } from '@fluentui/react/lib/Styling';
 import { Panel, PanelType } from '@fluentui/react/lib/Panel';
-import { Stack, IStackStyles, IStackTokens, IStackItemStyles } from '@fluentui/react/lib/Stack';
-import { Text, ITextProps } from '@fluentui/react/lib/Text';
-import { Separator } from '@fluentui/react/lib/Separator';
+import { Stack,IStackTokens} from '@fluentui/react/lib/Stack';
+import { Text } from '@fluentui/react/lib/Text';
 import { Event } from '@microsoft/microsoft-graph-types';
-import { GraphRequest } from "@microsoft/sp-http";
-import { unstable_renderSubtreeIntoContainer } from 'react-dom';
+
 
 export default class MyCalendar extends React.Component<IMyCalendarProps, IMyCalendarState> {
   private _interval: number;
@@ -77,16 +75,12 @@ export default class MyCalendar extends React.Component<IMyCalendarProps, IMyCal
       meetings: []
     });    
 
-    const request: GraphRequest = this.props.graphClient
+    this.props.graphClient
       .api(`me/calendar/calendarView?startDateTime=${new Date().toISOString()}&endDateTime=${this._getFilterEndDateString()}`)
       .version("v1.0")
       .select('subject,start,end,showAs,webLink,location,isAllDay')
       .top(this.props.numMeetings > 0 ? this.props.numMeetings : 100)
-      .orderby("start/dateTime");
-
-    console.log(request.buildFullUrl());
-
-    request
+      .orderby("start/dateTime")
       .get()
       .then((result: IMeetings) => {
         const meetings: IMeeting[] = (result && result.value) ? result.value : [];
@@ -117,7 +111,7 @@ export default class MyCalendar extends React.Component<IMyCalendarProps, IMyCal
      */
   private _onRenderCell = (item: IMeeting, index: number | undefined): JSX.Element => {
     const startDate: Date = new Date(item.start.dateTime + 'Z');
-    const endDate: Date = new Date(item.end.dateTime + 'Z');     
+ 
 
     const itemElement: JSX.Element = 
       <div className={`${styles.meetingWrapper} ${item.showAs}`}>
@@ -148,7 +142,7 @@ export default class MyCalendar extends React.Component<IMyCalendarProps, IMyCal
   }
 
   private _getDateText = (date: Date): string => {
-    var text: string;
+    let text: string;
 
     if (this._isDateToday(date)) {
       text = "Today";
@@ -234,7 +228,7 @@ export default class MyCalendar extends React.Component<IMyCalendarProps, IMyCal
     const endDate: Date = new Date(meeting.end.dateTime + 'Z');        
     // get duration in minutes
     const duration: number = Math.round((endDate as any) - (startDate as any)) / (1000 * 60);
-    var durationText: string;
+    let durationText: string;
 
     if (duration <= 0) {
       durationText = '';
